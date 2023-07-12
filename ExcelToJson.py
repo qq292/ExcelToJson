@@ -2,7 +2,7 @@ import openpyxl
 import json
 import os
 import argparse
-
+import re
 
 def GetRange(sheet):
 
@@ -15,8 +15,8 @@ def GetRange(sheet):
     for row in list(sheet)[0]:
         if (row.value is None):
             break
-        title.append(row.value)
-
+        title.append(re.sub(r"\(.*\)","",row.value))
+    print(title)
     for row in sheet.iter_rows():
         if row[0].value is None:
             break
@@ -29,24 +29,18 @@ def GetRange(sheet):
         else:
             c = col[0].coordinate
 
-    return title, sheet.title, sheet["A2":c.split("1")[0] +
-                                     "".join(list(filter(str.isdigit, r)))]
+    return title, sheet.title, sheet["A2":c.split("1")[0] + "".join(list(filter(str.isdigit, r)))]
 
 
 def SheetToJson(sheetRange):
     title, fileName, sheet = GetRange(sheetRange)
-    return json.dumps([
-        dict(zip(title, [cell.value for cell in cellTupe]))
-        for cellTupe in sheet
-    ],
-                      ensure_ascii=False,
-                      indent=4), fileName
+    return json.dumps([dict(zip(title, [cell.value for cell in cellTupe]))for cellTupe in sheet],ensure_ascii=False,indent=4), fileName
 
 
 def SaveJson(data):
     jsonData, filename = data
     filePath = savePath + "\\" + filename + ".json"
-    with open(filePath, "w") as f:
+    with open(filePath, "w",encoding='utf-8') as f:
         f.write(jsonData)
     print("已保存到:  "+filePath)
 
