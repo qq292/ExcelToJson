@@ -1,13 +1,3 @@
 ## Excel转Json
 
-''' 
-python ExcelToJson.py Hero.xlsx
-'''
-
-''' 
-python ExcelToJson.py Hero.xlsx -SaveJson dir
-'''
-
-''' 
-python ExcelToJson.py Hero.xlsx -Sheet 0 
-'''
+python ExcelToJson.py  "excelPath/xxx.xlsx"  "savePath"  -s "\(.*\)"
