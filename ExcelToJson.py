@@ -37,10 +37,10 @@ class EParse:
         return self.workbook.worksheets[0].title
     
     def parseToList(self,st)-> list: 
-        return [{self.subs(str(st.cell(row=1,column=col.column).value)):col.value for col in row} for row in self.__rowdata(st)]
+        return [{self.subs(str(st.cell(row=1,column=col.column).value)):col.value for col in row} for row in self.__rowdata(st) if row[0].value is not None]
          
     def parseToDict(self,st)-> dict: 
-        return {str(row[0].value):{self.subs(str(st.cell(row=1,column=col.column).value)):col.value for col in row[1:]} for row in self.__rowdata(st)}
+        return {str(row[0].value):{self.subs(str(st.cell(row=1,column=col.column).value)):col.value for col in row[1:]} for row in self.__rowdata(st) if row[0].value is not None}
     
     def subs(self,obj):
         if self.sub is None or not isinstance(obj,str):
