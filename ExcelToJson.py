@@ -12,9 +12,9 @@ r'''
 第二个参数: 解析后要保存的路径
 
 [可选参数]
--isAssociation:默认值[1],可选0和1[1=true,0=false],只对dict有效
--targetType:默认值["dict"],可选dict和list
--sub:默认值[None]  正则表达式去掉表格第一行cell值不需要的部分(可以做注释用,或其它用途)
+-a:默认值[1],可选0和1[1=true,0=false],只对dict有效
+-t:默认值["dict"],可选dict和list
+-s:默认值[None]  正则表达式去掉表格第一行cell值不需要的部分(可以做注释用,或其它用途)
 
 示例
 python ExcelToJson.py  "excelPath/xxx.xlsx"  "savePath"  -s "\(.*\)"
@@ -37,10 +37,10 @@ class EParse:
         return self.workbook.worksheets[0].title
     
     def parseToList(self,st)-> list: 
-        return [{self.subs(str(st.cell(row=1,column=col.column).value)):col.value for col in row} for row in self.__rowdata(st) if row[0].value is not None]
+        return [{self.subs(st.cell(row=1,column=col.column).value):col.value for col in row if st.cell(row=1,column=col.column).value is not None} for row in self.__rowdata(st) if row[0].value is not None]
          
     def parseToDict(self,st)-> dict: 
-        return {str(row[0].value):{self.subs(str(st.cell(row=1,column=col.column).value)):col.value for col in row[1:]} for row in self.__rowdata(st) if row[0].value is not None}
+        return {row[0].value:{self.subs(st.cell(row=1,column=col.column).value):col.value for col in row[1:] if st.cell(row=1,column=col.column).value is not None} for row in self.__rowdata(st) if row[0].value is not None}
     
     def subs(self,obj):
         if self.sub is None or not isinstance(obj,str):
